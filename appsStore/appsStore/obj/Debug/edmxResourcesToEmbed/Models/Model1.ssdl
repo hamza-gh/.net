@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="magasin_appModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="admin">
+    <Key>
+      <PropertyRef Name="id_per" />
+    </Key>
+    <Property Name="id_per" Type="int" Nullable="false" />
+    <Property Name="role" Type="varchar" MaxLength="50" />
+    <Property Name="login" Type="varchar" MaxLength="50" />
+    <Property Name="password" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="app">
+    <Key>
+      <PropertyRef Name="id_app" />
+    </Key>
+    <Property Name="id_app" Type="int" Nullable="false" />
+    <Property Name="nom" Type="varchar" MaxLength="50" />
+    <Property Name="taille" Type="varchar" MaxLength="50" />
+    <Property Name="image" Type="image" />
+    <Property Name="Liste_OS" Type="varchar" MaxLength="300" />
+    <Property Name="editeur" Type="varchar" MaxLength="50" />
+    <Property Name="categorie" Type="varchar" MaxLength="50" />
+    <Property Name="prix" Type="float" />
+  </EntityType>
+  <!--Erreurs détectées durant la génération :
+avertissement 6013: Aucune clé primaire n'est définie pour la table/vue 'magasin_app.dbo.favoris' ; en outre, aucune clé primaire valide n'a pu être déduite. Cette table/vue a été exclue. Pour utiliser l'entité, vous devez passer en revue votre schéma, ajouter les clés appropriées et supprimer le commentaire associé.
+        <EntityType Name="favoris">
+          <Property Name="id_user" Type="int" />
+          <Property Name="id_app" Type="int" />
+        </EntityType>-->
+  <EntityType Name="login">
+    <Key>
+      <PropertyRef Name="id_p" />
+    </Key>
+    <Property Name="id_p" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="personne">
+    <Key>
+      <PropertyRef Name="id_per" />
+    </Key>
+    <Property Name="id_per" Type="int" Nullable="false" />
+    <Property Name="nom" Type="varchar" MaxLength="50" />
+    <Property Name="prenom" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="utilisateur">
+    <Key>
+      <PropertyRef Name="id_per" />
+    </Key>
+    <Property Name="id_per" Type="int" Nullable="false" />
+    <Property Name="role" Type="varchar" MaxLength="1" Nullable="false" />
+    <Property Name="adress" Type="varchar" MaxLength="50" />
+    <Property Name="login" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="password" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_admin_personne">
+    <End Role="personne" Type="Self.personne" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="admin" Type="Self.admin" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="personne">
+        <PropertyRef Name="id_per" />
+      </Principal>
+      <Dependent Role="admin">
+        <PropertyRef Name="id_per" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <!--Erreurs détectées durant la génération :
+erreur 6004: La table 'magasin_app.dbo.favoris' est référencée par une relation, mais elle est introuvable.
+        <Association Name="FK_favoris_app" />-->
+  <!--Erreurs détectées durant la génération :
+erreur 6004: La table 'magasin_app.dbo.favoris' est référencée par une relation, mais elle est introuvable.
+        <Association Name="FK_favoris_user" />-->
+  <Association Name="FK_personne_login">
+    <End Role="login" Type="Self.login" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="personne" Type="Self.personne" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="login">
+        <PropertyRef Name="id_p" />
+      </Principal>
+      <Dependent Role="personne">
+        <PropertyRef Name="id_per" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_user_personne">
+    <End Role="personne" Type="Self.personne" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="utilisateur" Type="Self.utilisateur" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="personne">
+        <PropertyRef Name="id_per" />
+      </Principal>
+      <Dependent Role="utilisateur">
+        <PropertyRef Name="id_per" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="magasin_appModelStoreContainer">
+    <EntitySet Name="admin" EntityType="Self.admin" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="app" EntityType="Self.app" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="login" EntityType="Self.login" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="personne" EntityType="Self.personne" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="utilisateur" EntityType="Self.utilisateur" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_admin_personne" Association="Self.FK_admin_personne">
+      <End Role="personne" EntitySet="personne" />
+      <End Role="admin" EntitySet="admin" />
+    </AssociationSet>
+    <AssociationSet Name="FK_personne_login" Association="Self.FK_personne_login">
+      <End Role="login" EntitySet="login" />
+      <End Role="personne" EntitySet="personne" />
+    </AssociationSet>
+    <AssociationSet Name="FK_user_personne" Association="Self.FK_user_personne">
+      <End Role="personne" EntitySet="personne" />
+      <End Role="utilisateur" EntitySet="utilisateur" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

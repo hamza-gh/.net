@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="magasin_appModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="admin">
+    <Key>
+      <PropertyRef Name="id_per" />
+    </Key>
+    <Property Name="id_per" Type="Int32" Nullable="false" />
+    <Property Name="role" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="login" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="personne" Relationship="Self.FK_admin_personne" FromRole="admin" ToRole="personne" />
+  </EntityType>
+  <EntityType Name="app">
+    <Key>
+      <PropertyRef Name="id_app" />
+    </Key>
+    <Property Name="id_app" Type="Int32" Nullable="false" />
+    <Property Name="nom" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="taille" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="image" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="Liste_OS" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+    <Property Name="editeur" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="categorie" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="prix" Type="Double" />
+  </EntityType>
+  <EntityType Name="login">
+    <Key>
+      <PropertyRef Name="id_p" />
+    </Key>
+    <Property Name="id_p" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="personne" Relationship="Self.FK_personne_login" FromRole="login" ToRole="personne" />
+  </EntityType>
+  <EntityType Name="personne">
+    <Key>
+      <PropertyRef Name="id_per" />
+    </Key>
+    <Property Name="id_per" Type="Int32" Nullable="false" />
+    <Property Name="nom" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="prenom" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="admin" Relationship="Self.FK_admin_personne" FromRole="personne" ToRole="admin" />
+    <NavigationProperty Name="login" Relationship="Self.FK_personne_login" FromRole="personne" ToRole="login" />
+    <NavigationProperty Name="utilisateur" Relationship="Self.FK_user_personne" FromRole="personne" ToRole="utilisateur" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="utilisateur">
+    <Key>
+      <PropertyRef Name="id_per" />
+    </Key>
+    <Property Name="id_per" Type="Int32" Nullable="false" />
+    <Property Name="role" Type="String" MaxLength="1" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="adress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="login" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="personne" Relationship="Self.FK_user_personne" FromRole="utilisateur" ToRole="personne" />
+  </EntityType>
+  <Association Name="FK_admin_personne">
+    <End Role="personne" Type="Self.personne" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="admin" Type="Self.admin" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="personne">
+        <PropertyRef Name="id_per" />
+      </Principal>
+      <Dependent Role="admin">
+        <PropertyRef Name="id_per" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_personne_login">
+    <End Role="login" Type="Self.login" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="personne" Type="Self.personne" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="login">
+        <PropertyRef Name="id_p" />
+      </Principal>
+      <Dependent Role="personne">
+        <PropertyRef Name="id_per" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_user_personne">
+    <End Role="personne" Type="Self.personne" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="utilisateur" Type="Self.utilisateur" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="personne">
+        <PropertyRef Name="id_per" />
+      </Principal>
+      <Dependent Role="utilisateur">
+        <PropertyRef Name="id_per" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="magasin_appEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="admin" EntityType="Self.admin" />
+    <EntitySet Name="app" EntityType="Self.app" />
+    <EntitySet Name="login" EntityType="Self.login" />
+    <EntitySet Name="personne" EntityType="Self.personne" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="utilisateur" EntityType="Self.utilisateur" />
+    <AssociationSet Name="FK_admin_personne" Association="Self.FK_admin_personne">
+      <End Role="personne" EntitySet="personne" />
+      <End Role="admin" EntitySet="admin" />
+    </AssociationSet>
+    <AssociationSet Name="FK_personne_login" Association="Self.FK_personne_login">
+      <End Role="login" EntitySet="login" />
+      <End Role="personne" EntitySet="personne" />
+    </AssociationSet>
+    <AssociationSet Name="FK_user_personne" Association="Self.FK_user_personne">
+      <End Role="personne" EntitySet="personne" />
+      <End Role="utilisateur" EntitySet="utilisateur" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
